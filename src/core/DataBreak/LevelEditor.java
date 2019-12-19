@@ -58,6 +58,10 @@ public class LevelEditor {
                 levelManager.setTileType("SliderTile");
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
+            case '7' :
+                levelManager.setTileType("TargetTile");
+                levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
+                break;
             case 'r' :
                 for (int i = 0; i < layer3.getEveryTile().length; i++)
                 {
@@ -67,6 +71,8 @@ public class LevelEditor {
             case 's' :
                 levelManager.SaveTiles(layer3, "level1");
                 break;
+            case 'd' :
+                layer3.getTile(layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY)).Destroy();
 //            case '9' :
 //                levelManager.LoadTiles(layer3,"level1");
 //                break;

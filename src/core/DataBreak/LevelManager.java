@@ -124,6 +124,14 @@ public class LevelManager {
                 layerCollisionSystem.UpdateList(sliderTile, layerCollisionSystem.colliderListB);
                 tile = sliderTile;
                 break;
+            case "TargetTile" :
+                Tile tT =  layer.getTile(col, row);
+                TargetTile targetTile = new TargetTile(col, row, size, this.parent);
+                layer.getInitialTiles().set(tT.getCell(), targetTile);
+                layer.getInitialTiles().get(tT.getCell()).setCell(((tT.getRow()) * layer.getColNum()) + (tT.getCol()+1));
+                layerCollisionSystem.UpdateList(targetTile, layerCollisionSystem.colliderListB);
+                tile = targetTile;
+                break;
 //            case "RedTile" :
 //                RedTile redTile = new RedTile(col, row, size, this.parent);
 //                layer.getAddedTiles().add(redTile);
