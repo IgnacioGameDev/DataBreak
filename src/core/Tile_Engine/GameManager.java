@@ -25,7 +25,7 @@ public class GameManager {
         }
     }
 
-    public boolean Ticks() { return tick; }
+    public boolean tick() { return tick; }
 
     public void setTick(boolean tick) { this.tick = tick; }
 

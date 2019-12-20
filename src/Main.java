@@ -1,9 +1,10 @@
+import core.DataBreak.DataBreak;
 import core.DataBreak.LevelEditor;
 import processing.core.PApplet;
 
 public class Main extends PApplet {
 
-    public LevelEditor levelEditor;
+    DataBreak dataBreak;
 
     public static void main(String args[]) {PApplet.main("Main");}
 
@@ -11,16 +12,18 @@ public class Main extends PApplet {
 
     public void setup()
     {
-        levelEditor = new LevelEditor(this);
+        dataBreak = new DataBreak(this);
     }
 
     public void draw() {
-        levelEditor.Update();
+        dataBreak.Update();
     }
 
-    public void mouseReleased() {}
+    public void mouseReleased() {
+        dataBreak.MousePressed(mouseX, mouseY);
+    }
 
     public void keyReleased() {
-        levelEditor.keyReleased(key, keyCode);
+        dataBreak.KeyPressed(key, keyCode);
     }
 }

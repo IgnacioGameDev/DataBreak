@@ -3,15 +3,18 @@ import core.DataBreak.Tile_Types.Level_Tiles.*;
 import core.Tile_Engine.Collision_Systems.LayerCollisionSystem;
 import core.Tile_Engine.Collision_Systems.ProxyCollisionSystem;
 import core.Tile_Engine.Data_Management.DataManager;
+import core.Tile_Engine.Data_Management.Serializable;
+import core.Tile_Engine.Tile_System.Components.Directions;
 import core.Tile_Engine.Tile_System.EmptyTile;
 import core.Tile_Engine.Tile_System.Tile;
 import core.Tile_Engine.Tile_System.TileMap;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import java.util.ArrayList;
 
-public class LevelManager {
+public class LevelManager implements Serializable {
 
     private PApplet parent;
     private String tileType;
@@ -20,6 +23,14 @@ public class LevelManager {
     private DataManager dataManager;
     private LayerCollisionSystem layerCollisionSystem;
     private ProxyCollisionSystem proxyCollisionSystem;
+    private String infoLocation = "src/core/DataBreak/Level_Data/level1Info.json";
+
+    private int objectiveNum;
+    private int playerUp;
+    private int playerDown;
+    private int playerRight;
+    private int playerLeft;
+    private ArrayList<PlayerTile> players;
 
     public LevelManager(PApplet parent, LayerCollisionSystem layerCollisionSystem, ProxyCollisionSystem proxyCollisionSystem)
     {
@@ -28,20 +39,22 @@ public class LevelManager {
         this.proxyCollisionSystem = proxyCollisionSystem;
         dataManager = new DataManager(this.parent);
         dataManager.load();
+        players = new ArrayList<>();
     }
 
-    public void SaveTiles(TileMap layer, String levelName)
+    public void SaveLevel(TileMap layer, String levelName)
     {
         ArrayList<Tile> allTiles = layer.getInitialTiles();
         for (int i = 0; i < layer.getAddedTiles().size(); i++)
         {
             allTiles.add(layer.getAddedTiles().get(i));
         }
+        parent.saveJSONObject(this.serializeToJSON(), infoLocation);
         dataManager.save(allTiles, levelName);
         System.out.println("save");
     }
 
-    public void LoadTiles(TileMap layer, String levelName)
+    public void LoadLevel(TileMap layer, String levelName)
     {
         loadedTiles = new ArrayList<>();
         loadedSpecialTiles = new ArrayList<>();
@@ -61,7 +74,28 @@ public class LevelManager {
         }
         layer.setInitialTiles(loadedTiles);
         layer.setAddedTiles(loadedSpecialTiles);
+        this.loadJSONObject(parent.loadJSONObject(infoLocation));
         System.out.println("load");
+    }
+
+    @Override
+    public JSONObject serializeToJSON() {
+        JSONObject levelData = new JSONObject();
+        levelData.setInt("objectiveNum", objectiveNum);
+        levelData.setInt("playerUp", playerUp);
+        levelData.setInt("playerDown", playerDown);
+        levelData.setInt("playerLeft", playerLeft);
+        levelData.setInt("playerRight", playerRight);
+        return levelData;
+    }
+
+    @Override
+    public void loadJSONObject(JSONObject json) {
+        objectiveNum = json.getInt("objectiveNum");
+        playerUp = json.getInt("playerUp");
+        playerDown = json.getInt("playerDown");
+        playerLeft = json.getInt("playerLeft");
+        playerRight = json.getInt("playerRight");
     }
 
     public Tile AddTile(TileMap layer, int col, int row, int size)
@@ -132,15 +166,142 @@ public class LevelManager {
                 layerCollisionSystem.UpdateList(targetTile, layerCollisionSystem.colliderListB);
                 tile = targetTile;
                 break;
-//            case "RedTile" :
-//                RedTile redTile = new RedTile(col, row, size, this.parent);
-//                layer.getAddedTiles().add(redTile);
-//                layerCollisionSystem.UpdateList(redTile, layerCollisionSystem.colliderListA);
-//                tile = redTile;
-//                break;
+            case "ExitTile" :
+                Tile eT =  layer.getTile(col, row);
+                ExitTile exitTile = new ExitTile(col, row, size, this.parent);
+                layer.getInitialTiles().set(eT.getCell(), exitTile);
+                layer.getInitialTiles().get(eT.getCell()).setCell(((eT.getRow()) * layer.getColNum()) + (eT.getCol()+1));
+                layerCollisionSystem.UpdateList(exitTile, layerCollisionSystem.colliderListB);
+                objectiveNum++;
+                tile = exitTile;
+                break;
         }
         return tile;
     }
 
+    public void AddPlayer(TileMap layer, int col, int row, int size, Directions dir)
+    {
+        if (dirToInt(dir) > 0)
+        {
+            PlayerTile playerTile = new PlayerTile(col, row, size, parent, dir);
+            layer.getAddedTiles().add(playerTile);
+            layerCollisionSystem.UpdateList(playerTile, layerCollisionSystem.colliderListA);
+            players.add(playerTile);
+        }
+        else
+        {
+            notAllowed();
+        }
+    }
+
+    public void notAllowed()
+    {
+        parent.textSize(30);
+        parent.textAlign(PConstants.CENTER, PConstants.CENTER);
+        parent.fill(255, 0, 0);
+        parent.text("Not Allowed", 400, 400);
+    }
+
+    private int dirToInt(Directions directions)
+    {
+        int result = 0;
+        switch (directions)
+        {
+            case UP :
+                result = playerUp;
+                break;
+            case DOWN :
+                result = playerDown;
+                break;
+            case LEFT :
+                result = playerLeft;
+                break;
+            case RIGHT :
+                result = playerRight;
+                break;
+        }
+        return result;
+    }
+
     public void setTileType(String tileType) { this.tileType = tileType; }
+
+    public boolean CheckPlayers(Gamemode condition, int objectiveNum)
+    {
+        int victcheck = 0;
+        boolean result = false;
+        for (int i = 0; i < players.size(); i++)
+        {
+            switch (condition)
+            {
+                case GAMEOVER :
+                    if (players.get(i).isGameOver())
+                    {
+                        result = true;
+                    }
+                case VICTORY :
+                    victcheck += players.get(i).getVictory();
+                    if (victcheck == objectiveNum)
+                    {
+                        result = true;
+                    }
+            }
+        }
+        return result;
+    }
+
+    public int getObjectiveNum() { return objectiveNum; }
+
+    public int getPlayerUp() { return playerUp; }
+
+    public int getPlayerDown() { return playerDown; }
+
+    public int getPlayerLeft() { return playerLeft; }
+
+    public int getPlayerRight() { return playerRight; }
+
+    public void setObjectiveNum(int objectiveNum) { this.objectiveNum = objectiveNum; }
+
+    public void setPlayerUp(int playerUp) {
+        if (playerUp < 0)
+        {
+            this.playerUp = 0;
+        }
+        else
+        {
+            this.playerUp = playerUp;
+        }
+    }
+
+    public void setPlayerDown(int playerDown) {
+        if (playerDown < 0)
+        {
+            this.playerDown = 0;
+        }
+        else
+        {
+            this.playerDown = playerDown;
+        }
+    }
+
+    public void setPlayerLeft(int playerLeft) {
+        if (playerLeft < 0)
+        {
+            this.playerLeft = 0;
+        }
+        else
+        {
+            this.playerLeft = playerLeft;
+        }
+    }
+
+    public void setPlayerRight(int playerRight) {
+        if (playerRight < 0)
+        {
+            this.playerRight = 0;
+        }
+        else
+        {
+            this.playerRight = playerRight;
+        }
+    }
 }
