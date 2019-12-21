@@ -11,12 +11,13 @@ import java.util.ArrayList;
 public class DataManager {
 
     PApplet parent;
-    private String loadGameFile = "level1.json";
+    private String loadGameFile;
     private String dataFolder = "src/core/DataBreak/Level_Data/";
     public JSONObject gameData;
 
-    public DataManager(PApplet p){
+    public DataManager(PApplet p, String fileName){
         this.parent = p;
+        loadGameFile = fileName;
     }
 
     public void load(){

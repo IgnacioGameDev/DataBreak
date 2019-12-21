@@ -8,10 +8,13 @@ public class PlayerTile extends Tile {
     public FillColor fillColor;
     public Movement movement;
     public InterlayerCollider interlayerCollider;
+    public ProximityCollider proximityCollider;
 
     private boolean gameOver;
     private int victory;
     private boolean hasCollected;
+    private Directions specialDir;
+    private boolean flipIt;
 
     public PlayerTile(int col, int row, int size, PApplet p, Directions dir)
     {
@@ -19,13 +22,16 @@ public class PlayerTile extends Tile {
         this.fillColor = new FillColor(this, new int[] {255, 0, 0}, false);
         this.movement = new Movement(this, dir);
         this.interlayerCollider = new InterlayerCollider(this);
+        this.proximityCollider = new ProximityCollider(this);
         hasCollected = false;
+        flipIt = false;
         gameOver = false;
         victory = 0;
     }
 
     @Override
     public void Render() {
+
         if (this.interlayerCollider.collidesWith("DirUpTile"))
         {
             this.movement.setDir(Directions.UP);
@@ -58,32 +64,66 @@ public class PlayerTile extends Tile {
                 ((TargetTile) this.interlayerCollider.collideType).deValue();
             }
         }
+        else if (this.interlayerCollider.collidesWith("FlipTile"))
+        {
+            if (!this.flipIt)
+            {
+                this.flipIt = true;
+                this.movement.setDir(Directions.STATIC);
+                this.fillColor.setHue(new int[] {0, 255, 0});
+            }
+        }
         else if (this.interlayerCollider.collidesWith("ExitTile"))
         {
             if (hasCollected)
             {
                 victory = 1;
                 this.movement.setDir(Directions.STATIC);
+                this.fillColor.setHue(new int[] {0, 255, 0});
             }
             else
             { gameOver = true; }
         }
         else if (this.interlayerCollider.collidesWith("EmptyTile"))
         {
+            this.gameOver = true;
             this.Destroy();
         }
-        this.CompUpdate();
-    }
 
-    private void ChangeSprite(Tile t)
-    {
-        for (int i = 0; i < t.componentList.size(); i++)
+        if (this.proximityCollider.collidesWithNorth("PlayerTile") && this.movement.getDir() == Directions.UP)
         {
-            if (t.componentList.get(i) instanceof Sprite)
+            if (((PlayerTile)this.proximityCollider.NearbyTiles().get(3)).getSpecialDir() == Directions.DOWN)
             {
-                ((Sprite) t.componentList.get(i)).setImg("ArrowRight.png");
+                this.gameOver = true;
+                this.Destroy();
             }
         }
+        else if (this.proximityCollider.collidesWithSouth("PlayerTile") && this.movement.getDir() == Directions.DOWN)
+        {
+            if (((PlayerTile)this.proximityCollider.NearbyTiles().get(5)).getSpecialDir() == Directions.UP)
+            {
+                this.gameOver = true;
+                this.Destroy();
+            }
+        }
+        else if (this.proximityCollider.collidesWithEast("PlayerTile") && this.movement.getDir() == Directions.RIGHT)
+        {
+            if (((PlayerTile)this.proximityCollider.NearbyTiles().get(7)).getSpecialDir() == Directions.LEFT)
+            {
+                this.gameOver = true;
+                this.Destroy();
+            }
+        }
+        else if (this.proximityCollider.collidesWithWest("PlayerTile") && this.movement.getDir() == Directions.LEFT)
+        {
+            if (((PlayerTile)this.proximityCollider.NearbyTiles().get(1)).getSpecialDir() == Directions.RIGHT)
+            {
+                this.gameOver = true;
+                this.Destroy();
+            }
+        }
+        this.CompUpdate();
+        specialDir = this.movement.getDir();
     }
 
     private void ChangeMove(Tile t, Directions dir)
@@ -108,4 +148,8 @@ public class PlayerTile extends Tile {
     public boolean hasCollected() {
         return hasCollected;
     }
+
+    public Directions getSpecialDir() { return specialDir; }
+
+    public boolean isFlipIt() { return flipIt; }
 }

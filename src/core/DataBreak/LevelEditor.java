@@ -1,11 +1,14 @@
 package core.DataBreak;
 import core.DataBreak.Tile_Types.Level_Tiles.BackgroundTile;
+import core.DataBreak.Tile_Types.UI_Tiles.MarkerTile;
 import core.Tile_Engine.Collision_Systems.LayerCollisionSystem;
 import core.Tile_Engine.Tile_System.Components.Directions;
 import core.Tile_Engine.Tile_System.EmptyTile;
 import core.Tile_Engine.Tile_System.TileMap;
 import processing.core.PApplet;
 import processing.core.PConstants;
+
+import java.util.ArrayList;
 
 public class LevelEditor {
 
@@ -14,9 +17,12 @@ public class LevelEditor {
     private LayerCollisionSystem layerCollisionSystem;
     private LevelManager levelManager;
 
+    private boolean isPlaying;
     private boolean gameOver;
     private boolean victory;
     private Directions playerDir;
+
+    private ArrayList<MarkerTile> markerTiles;
 
 
     public LevelEditor(PApplet parent)
@@ -27,14 +33,24 @@ public class LevelEditor {
         layer3 = new TileMap(16, 16, 50, new EmptyTile(1, 1, 1, this.parent), parent);
         layerCollisionSystem = new LayerCollisionSystem(layer2, layer3, parent);
         levelManager = new LevelManager(this.parent, this.layerCollisionSystem, layer3.getProxyCollisionSystem());
+        isPlaying = true;
+        markerTiles = new ArrayList<>();
     }
 
     public void Update()
     {
-        layerCollisionSystem.CheckCollisions();
-        layer1.Update();
-        layer2.Update();
-        layer3.Update();
+        if (isPlaying)
+        {
+            levelManager.CheckPlayerSwitch(layer3);
+            layerCollisionSystem.CheckCollisions();
+            layer1.Update();
+            layer2.Update();
+            layer3.Update();
+        }
+        for (MarkerTile markerTile : markerTiles)
+        {
+            markerTile.Render();
+        }
     }
 
     public void LevelInfo()
@@ -56,31 +72,35 @@ public class LevelEditor {
                 levelManager.setTileType("PathTile");
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
-            case '2' :
+            case 'w' :
                 levelManager.setTileType("DirUpTile");
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
-            case '3' :
+            case 's' :
                 levelManager.setTileType("DirDownTile");
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
-            case '4' :
+            case 'd' :
                 levelManager.setTileType("DirRightTile");
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
-            case '5' :
+            case 'a' :
                 levelManager.setTileType("DirLeftTile");
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
-            case '6' :
+            case 'e' :
+                levelManager.setTileType("FlipTile");
+                levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
+                break;
+            case 'f' :
                 levelManager.setTileType("SliderTile");
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
-            case '7' :
+            case '2' :
                 levelManager.setTileType("TargetTile");
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
-            case '8' :
+            case '3' :
                 levelManager.setTileType("ExitTile");
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
@@ -90,13 +110,13 @@ public class LevelEditor {
                     layer3.getEveryTile()[i].Destroy();
                 }
                 break;
-            case 's' :
+            case 'z' :
                 levelManager.SaveLevel(layer3, "level1");
                 break;
-            case 'd' :
+            case 'q' :
                 layer3.getTile(layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY)).Destroy();
                 break;
-            case '9' :
+            case 'x' :
                 levelManager.LoadLevel(layer3,"level1");
                 break;
         }
@@ -146,7 +166,7 @@ public class LevelEditor {
 
     public void mousePlay(int x, int y)
     {
-        if (y < 100)
+        if (y < 120)
         {
             if (x < 200)
             {
@@ -165,21 +185,36 @@ public class LevelEditor {
                 playerDir = Directions.RIGHT;
             }
         }
-        if (y > 200)
+        if (y > 120 && y < 700)
         {
-            levelManager.AddPlayer(layer2, layer2.getLinePixel(x), layer2.getLinePixel(y), layer2.getTileSize(), playerDir);
+            if (layer3.getTile(layer3.getLinePixel(x), layer3.getLinePixel(y)).getClass().getSimpleName().equals("PathTile"))
+            {
+                levelManager.AddPlayer(layer2, layer2.getLinePixel(x), layer2.getLinePixel(y), layer2.getTileSize(), playerDir);
+                markerTiles.add(new MarkerTile(layer2.getLinePixel(x), layer2.getLinePixel(y), layer2.getTileSize(), parent));
+            }
+            else
+            {
+                levelManager.notAllowed();
+            }
+        }
+        if (y > 700 && x < 200)
+        {
+            setPlaying(true);
+            markerTiles.clear();
         }
     }
 
-
-
     public boolean checkGameOver()
     {
-        return levelManager.CheckPlayers(Gamemode.GAMEOVER, 5);
+        return levelManager.CheckPlayersGameOver();
     }
 
     public boolean checkVictory()
     {
-        return levelManager.CheckPlayers(Gamemode.VICTORY, levelManager.getObjectiveNum());
+        return levelManager.CheckPlayersVictory(levelManager.getObjectiveNum());
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
     }
 }

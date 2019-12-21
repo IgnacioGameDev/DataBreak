@@ -13,6 +13,9 @@ public class DataBreak {
     private LevelEditor levelEditor;
     private TileMap levelSelect;
 
+    private int wait;
+
+
     public DataBreak(PApplet parent)
     {
         this.parent = parent;
@@ -41,18 +44,44 @@ public class DataBreak {
                 {
                     levelEditor.Update();
                     levelEditor.LevelInfo();
-                    gameManager.setTick(false);
-                    if (levelEditor.checkVictory())
+                    if (levelEditor.checkGameOver())
                     {
+                        wait = 2;
+                        gamemode = Gamemode.GAMEOVER;
+                    }
+                    else if (levelEditor.checkVictory())
+                    {
+                        wait = 2;
                         gamemode = Gamemode.VICTORY;
                     }
+                    gameManager.setTick(false);
                 }
                 break;
             case GAMEOVER:
-                GameOver();
+                gameManager.Run();
+                if (gameManager.tick())
+                {
+                    levelEditor.Update();
+                    levelEditor.LevelInfo();
+                    wait--;
+                    gameManager.setTick(false);
+                }
+                if (wait < 0) { GameOver(); }
                 break;
             case VICTORY:
-                Victory();
+                gameManager.Run();
+                if (gameManager.tick())
+                {
+                    levelEditor.Update();
+                    levelEditor.LevelInfo();
+                    wait--;
+                    gameManager.setTick(false);
+                    if (wait < 0)
+                    {
+                        Victory();
+                        gameManager.setTick(false);
+                    }
+                }
                 break;
         }
     }
@@ -78,6 +107,7 @@ public class DataBreak {
         if (key == 'n')
         {
             gamemode = Gamemode.PLAY;
+            levelEditor.setPlaying(false);
         }
     }
 
@@ -114,7 +144,12 @@ public class DataBreak {
 
     private void GameOver()
     {
-
+        parent.clear();
+        parent.background(0, 0, 0);
+        parent.textSize(50);
+        parent.textAlign(PConstants.CENTER, PConstants.CENTER);
+        parent.fill(255, 255, 255);
+        parent.text("GAME OVER!", 400, 400);
     }
 
     private void Victory()
@@ -123,15 +158,15 @@ public class DataBreak {
         parent.background(255, 255, 255);
         parent.textSize(50);
         parent.textAlign(PConstants.CENTER, PConstants.CENTER);
-        parent.fill(0, 0, 0);
+        parent.fill(parent.random(0, 255), parent.random(0, 255), parent.random(0, 255));
         parent.text("YOU WON!!", 400, 400);
-        gameManager.Run();
-        if (gameManager.tick())
-        {
-
-            gameManager.setTick(false);
-        }
-
-
+        parent.fill(parent.random(0, 255), parent.random(0, 255), parent.random(0, 255));
+        parent.text("YOU WON!!", parent.random(100, 700), parent.random(100, 700));
+        parent.fill(parent.random(0, 255), parent.random(0, 255), parent.random(0, 255));
+        parent.text("YOU WON!!", parent.random(100, 700), parent.random(100, 700));
+        parent.fill(parent.random(0, 255), parent.random(0, 255), parent.random(0, 255));
+        parent.text("YOU WON!!", parent.random(100, 700), parent.random(100, 700));
+        parent.fill(parent.random(0, 255), parent.random(0, 255), parent.random(0, 255));
+        parent.text("YOU WON!!", parent.random(100, 700), parent.random(100, 700));
     }
 }

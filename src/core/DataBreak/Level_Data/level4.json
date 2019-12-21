@@ -421,313 +421,313 @@
   },
   {
     "col": 5,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 6,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 7,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 8,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 9,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 10,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 11,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 12,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 13,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 14,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 15,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 4
-  },
-  {
-    "col": 0,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 1,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 2,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 3,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 4,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 5,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 6,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 7,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 8,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 9,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 10,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 11,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 12,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 13,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 14,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 15,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 5
-  },
-  {
-    "col": 0,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 1,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 2,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 3,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 4,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 5,
-    "tileType": "PathTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 6,
-    "tileType": "PathTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 7,
-    "tileType": "PathTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 8,
-    "tileType": "PathTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 9,
-    "tileType": "PathTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 10,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 11,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 12,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 13,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 14,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 15,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 6
-  },
-  {
-    "col": 0,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 7
-  },
-  {
-    "col": 1,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 7
-  },
-  {
-    "col": 2,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 7
-  },
-  {
-    "col": 3,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 7
-  },
-  {
-    "col": 4,
-    "tileType": "EmptyTile",
-    "size": 50,
-    "row": 7
-  },
-  {
-    "col": 5,
     "tileType": "ExitTile",
     "size": 50,
-    "row": 7
+    "row": 4
   },
   {
     "col": 6,
     "tileType": "PathTile",
     "size": 50,
+    "row": 4
+  },
+  {
+    "col": 7,
+    "tileType": "PathTile",
+    "size": 50,
+    "row": 4
+  },
+  {
+    "col": 8,
+    "tileType": "PathTile",
+    "size": 50,
+    "row": 4
+  },
+  {
+    "col": 9,
+    "tileType": "DirRightTile",
+    "size": 50,
+    "row": 4
+  },
+  {
+    "col": 10,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 4
+  },
+  {
+    "col": 11,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 4
+  },
+  {
+    "col": 12,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 4
+  },
+  {
+    "col": 13,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 4
+  },
+  {
+    "col": 14,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 4
+  },
+  {
+    "col": 15,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 4
+  },
+  {
+    "col": 0,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 1,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 2,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 3,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 4,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 5,
+    "tileType": "PathTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 6,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 7,
+    "tileType": "PathTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 8,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 9,
+    "tileType": "PathTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 10,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 11,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 12,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 13,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 14,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 15,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 5
+  },
+  {
+    "col": 0,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 1,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 2,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 3,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 4,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 5,
+    "tileType": "PathTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 6,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 7,
+    "tileType": "FlipTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 8,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 9,
+    "tileType": "TargetTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 10,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 11,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 12,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 13,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 14,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 15,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 6
+  },
+  {
+    "col": 0,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 7
+  },
+  {
+    "col": 1,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 7
+  },
+  {
+    "col": 2,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 7
+  },
+  {
+    "col": 3,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 7
+  },
+  {
+    "col": 4,
+    "tileType": "EmptyTile",
+    "size": 50,
+    "row": 7
+  },
+  {
+    "col": 5,
+    "tileType": "PathTile",
+    "size": 50,
+    "row": 7
+  },
+  {
+    "col": 6,
+    "tileType": "EmptyTile",
+    "size": 50,
     "row": 7
   },
   {
     "col": 7,
-    "tileType": "TargetTile",
+    "tileType": "PathTile",
     "size": 50,
     "row": 7
   },
   {
     "col": 8,
-    "tileType": "PathTile",
+    "tileType": "EmptyTile",
     "size": 50,
     "row": 7
   },
@@ -805,7 +805,7 @@
   },
   {
     "col": 5,
-    "tileType": "PathTile",
+    "tileType": "DirDownTile",
     "size": 50,
     "row": 8
   },
@@ -829,7 +829,7 @@
   },
   {
     "col": 9,
-    "tileType": "PathTile",
+    "tileType": "DirLeftTile",
     "size": 50,
     "row": 8
   },

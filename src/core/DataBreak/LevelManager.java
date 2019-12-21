@@ -22,8 +22,7 @@ public class LevelManager implements Serializable {
     private ArrayList<Tile> loadedSpecialTiles;
     private DataManager dataManager;
     private LayerCollisionSystem layerCollisionSystem;
-    private ProxyCollisionSystem proxyCollisionSystem;
-    private String infoLocation = "src/core/DataBreak/Level_Data/level1Info.json";
+    private String infoLocation = "src/core/DataBreak/Level_Data/level9info.json";
 
     private int objectiveNum;
     private int playerUp;
@@ -31,15 +30,16 @@ public class LevelManager implements Serializable {
     private int playerRight;
     private int playerLeft;
     private ArrayList<PlayerTile> players;
+    private ArrayList<Tile> dirTiles;
 
     public LevelManager(PApplet parent, LayerCollisionSystem layerCollisionSystem, ProxyCollisionSystem proxyCollisionSystem)
     {
         this.parent = parent;
         this.layerCollisionSystem = layerCollisionSystem;
-        this.proxyCollisionSystem = proxyCollisionSystem;
-        dataManager = new DataManager(this.parent);
+        dataManager = new DataManager(this.parent, "level9.json");
         dataManager.load();
         players = new ArrayList<>();
+        dirTiles = new ArrayList<>();
     }
 
     public void SaveLevel(TileMap layer, String levelName)
@@ -125,6 +125,7 @@ public class LevelManager implements Serializable {
                 layer.getInitialTiles().set(dU.getCell(), dirUpTile);
                 layer.getInitialTiles().get(dU.getCell()).setCell(((dU.getRow()) * layer.getColNum()) + (dU.getCol()+1));
                 layerCollisionSystem.UpdateList(dirUpTile, layerCollisionSystem.colliderListB);
+                dirTiles.add(dirUpTile);
                 tile = dirUpTile;
                 break;
             case "DirDownTile" :
@@ -133,6 +134,7 @@ public class LevelManager implements Serializable {
                 layer.getInitialTiles().set(dD.getCell(), dirDownTile);
                 layer.getInitialTiles().get(dD.getCell()).setCell(((dD.getRow()) * layer.getColNum()) + (dD.getCol()+1));
                 layerCollisionSystem.UpdateList(dirDownTile, layerCollisionSystem.colliderListB);
+                dirTiles.add(dirDownTile);
                 tile = dirDownTile;
                 break;
             case "DirLeftTile" :
@@ -141,6 +143,7 @@ public class LevelManager implements Serializable {
                 layer.getInitialTiles().set(dL.getCell(), dirLeftTile);
                 layer.getInitialTiles().get(dL.getCell()).setCell(((dL.getRow()) * layer.getColNum()) + (dL.getCol()+1));
                 layerCollisionSystem.UpdateList(dirLeftTile, layerCollisionSystem.colliderListB);
+                dirTiles.add(dirLeftTile);
                 tile = dirLeftTile;
                 break;
             case "DirRightTile" :
@@ -149,12 +152,13 @@ public class LevelManager implements Serializable {
                 layer.getInitialTiles().set(dR.getCell(), dirRightTile);
                 layer.getInitialTiles().get(dR.getCell()).setCell(((dR.getRow()) * layer.getColNum()) + (dR.getCol()+1));
                 layerCollisionSystem.UpdateList(dirRightTile, layerCollisionSystem.colliderListB);
+                dirTiles.add(dirRightTile);
                 tile = dirRightTile;
                 break;
             case "SliderTile" :
                 SliderTile sliderTile = new SliderTile(col, row, size, this.parent);
                 layer.getAddedTiles().add(sliderTile);
-                proxyCollisionSystem.UpdateList(sliderTile, proxyCollisionSystem.proxyList);
+                layer.getProxyCollisionSystem().UpdateList(sliderTile, layer.getProxyCollisionSystem().proxyList);
                 layerCollisionSystem.UpdateList(sliderTile, layerCollisionSystem.colliderListB);
                 tile = sliderTile;
                 break;
@@ -175,6 +179,14 @@ public class LevelManager implements Serializable {
                 objectiveNum++;
                 tile = exitTile;
                 break;
+            case "FlipTile" :
+                Tile fT =  layer.getTile(col, row);
+                FlipTile flipTile = new FlipTile(col, row, size, this.parent);
+                layer.getInitialTiles().set(fT.getCell(), flipTile);
+                layer.getInitialTiles().get(fT.getCell()).setCell(((fT.getRow()) * layer.getColNum()) + (fT.getCol()+1));
+                layerCollisionSystem.UpdateList(flipTile, layerCollisionSystem.colliderListB);
+                tile = flipTile;
+                break;
         }
         return tile;
     }
@@ -185,6 +197,7 @@ public class LevelManager implements Serializable {
         {
             PlayerTile playerTile = new PlayerTile(col, row, size, parent, dir);
             layer.getAddedTiles().add(playerTile);
+            layer.getProxyCollisionSystem().UpdateList(playerTile, layer.getProxyCollisionSystem().proxyList);
             layerCollisionSystem.UpdateList(playerTile, layerCollisionSystem.colliderListA);
             players.add(playerTile);
         }
@@ -225,28 +238,79 @@ public class LevelManager implements Serializable {
 
     public void setTileType(String tileType) { this.tileType = tileType; }
 
-    public boolean CheckPlayers(Gamemode condition, int objectiveNum)
+    public boolean CheckPlayersGameOver()
     {
-        int victcheck = 0;
         boolean result = false;
         for (int i = 0; i < players.size(); i++)
         {
-            switch (condition)
+            if (players.get(i).isGameOver())
             {
-                case GAMEOVER :
-                    if (players.get(i).isGameOver())
-                    {
-                        result = true;
-                    }
-                case VICTORY :
-                    victcheck += players.get(i).getVictory();
-                    if (victcheck == objectiveNum)
-                    {
-                        result = true;
-                    }
+                result = true;
+            }
+            for (int j = i+1; j < players.size(); j++)
+            {
+                if (players.get(i).getCol() == players.get(j).getCol() && players.get(i).getRow() == players.get(j).getRow())
+                {
+                    result = true;
+                }
             }
         }
         return result;
+    }
+
+    public boolean CheckPlayersVictory(int objective)
+    {
+        boolean result = false;
+        int victcheck = 0;
+        for (int i = 0; i < players.size(); i++)
+        {
+            victcheck += players.get(i).getVictory();
+            if (victcheck == objective)
+            {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    public void CheckPlayerSwitch(TileMap layer)
+    {
+        for (int i = 0; i < players.size(); i++)
+        {
+            if (players.get(i).isFlipIt())
+            {
+                FlipDirection(layer);
+                players.remove(i);
+            }
+        }
+    }
+
+    private void FlipDirection(TileMap layer)
+    {
+        ArrayList<Tile> temporary = (ArrayList<Tile>) dirTiles.clone();
+        for (int i = 0; i < temporary.size(); i++)
+        {
+            if (temporary.get(i) instanceof DirUpTile)
+            {
+                tileType = "DirDownTile";
+                AddTile(layer, temporary.get(i).getCol(), temporary.get(i).getRow(), layer.getTileSize());
+            }
+            else if (temporary.get(i) instanceof DirDownTile)
+            {
+                tileType = "DirUpTile";
+                AddTile(layer, temporary.get(i).getCol(), temporary.get(i).getRow(), layer.getTileSize());
+            }
+            else if (temporary.get(i) instanceof DirLeftTile)
+            {
+                tileType = "DirRightTile";
+                AddTile(layer, temporary.get(i).getCol(), temporary.get(i).getRow(), layer.getTileSize());
+            }
+            else if (temporary.get(i) instanceof DirRightTile)
+            {
+                tileType = "DirLeftTile";
+                AddTile(layer, temporary.get(i).getCol(), temporary.get(i).getRow(), layer.getTileSize());
+            }
+        }
     }
 
     public int getObjectiveNum() { return objectiveNum; }
@@ -263,45 +327,29 @@ public class LevelManager implements Serializable {
 
     public void setPlayerUp(int playerUp) {
         if (playerUp < 0)
-        {
-            this.playerUp = 0;
-        }
+        { this.playerUp = 0; }
         else
-        {
-            this.playerUp = playerUp;
-        }
+        { this.playerUp = playerUp; }
     }
 
     public void setPlayerDown(int playerDown) {
         if (playerDown < 0)
-        {
-            this.playerDown = 0;
-        }
+        { this.playerDown = 0; }
         else
-        {
-            this.playerDown = playerDown;
-        }
+        { this.playerDown = playerDown; }
     }
 
     public void setPlayerLeft(int playerLeft) {
         if (playerLeft < 0)
-        {
-            this.playerLeft = 0;
-        }
+        { this.playerLeft = 0; }
         else
-        {
-            this.playerLeft = playerLeft;
-        }
+        { this.playerLeft = playerLeft; }
     }
 
     public void setPlayerRight(int playerRight) {
         if (playerRight < 0)
-        {
-            this.playerRight = 0;
-        }
+        { this.playerRight = 0; }
         else
-        {
-            this.playerRight = playerRight;
-        }
+        { this.playerRight = playerRight; }
     }
 }
