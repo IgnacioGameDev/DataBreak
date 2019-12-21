@@ -22,7 +22,7 @@ public class LevelManager implements Serializable {
     private ArrayList<Tile> loadedSpecialTiles;
     private DataManager dataManager;
     private LayerCollisionSystem layerCollisionSystem;
-    private String infoLocation = "src/core/DataBreak/Level_Data/level9info.json";
+    private String infoLocation = "src/core/DataBreak/Level_Data/levelcustominfo.json";
 
     private int objectiveNum;
     private int playerUp;
@@ -36,7 +36,7 @@ public class LevelManager implements Serializable {
     {
         this.parent = parent;
         this.layerCollisionSystem = layerCollisionSystem;
-        dataManager = new DataManager(this.parent, "level9.json");
+        dataManager = new DataManager(this.parent, "levelcustom.json");
         dataManager.load();
         players = new ArrayList<>();
         dirTiles = new ArrayList<>();
