@@ -39,4 +39,6 @@ public class DataManager {
         }
         return null;
     }
+
+    public void setLoadGameFile(String loadGameFile) { this.loadGameFile = loadGameFile; }
 }

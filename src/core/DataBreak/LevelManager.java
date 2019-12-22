@@ -22,7 +22,7 @@ public class LevelManager implements Serializable {
     private ArrayList<Tile> loadedSpecialTiles;
     private DataManager dataManager;
     private LayerCollisionSystem layerCollisionSystem;
-    private String infoLocation = "src/core/DataBreak/Level_Data/levelcustominfo.json";
+    private String infoLocation = "src/core/DataBreak/Level_Data/level10info.json";
 
     private int objectiveNum;
     private int playerUp;
@@ -36,7 +36,7 @@ public class LevelManager implements Serializable {
     {
         this.parent = parent;
         this.layerCollisionSystem = layerCollisionSystem;
-        dataManager = new DataManager(this.parent, "levelcustom.json");
+        dataManager = new DataManager(this.parent, "level10.json");
         dataManager.load();
         players = new ArrayList<>();
         dirTiles = new ArrayList<>();
@@ -52,6 +52,13 @@ public class LevelManager implements Serializable {
         parent.saveJSONObject(this.serializeToJSON(), infoLocation);
         dataManager.save(allTiles, levelName);
         System.out.println("save");
+    }
+
+    public void SetLoadLevel(int levelNum)
+    {
+        dataManager.setLoadGameFile("level"+String.valueOf(levelNum)+".json");
+        dataManager.load();
+        infoLocation = "src/core/DataBreak/Level_Data/level" + String.valueOf(levelNum) + "info.json";
     }
 
     public void LoadLevel(TileMap layer, String levelName)
@@ -193,26 +200,24 @@ public class LevelManager implements Serializable {
 
     public void AddPlayer(TileMap layer, int col, int row, int size, Directions dir)
     {
+        PlayerTile playerTile = new PlayerTile(col, row, size, parent, dir);
+        layer.getAddedTiles().add(playerTile);
+        layer.getProxyCollisionSystem().UpdateList(playerTile, layer.getProxyCollisionSystem().proxyList);
+        layerCollisionSystem.UpdateList(playerTile, layerCollisionSystem.colliderListA);
+        players.add(playerTile);
+        subtractPlayer(dir);
+    }
+
+    public boolean canAddPlayer(Directions dir)
+    {
         if (dirToInt(dir) > 0)
         {
-            PlayerTile playerTile = new PlayerTile(col, row, size, parent, dir);
-            layer.getAddedTiles().add(playerTile);
-            layer.getProxyCollisionSystem().UpdateList(playerTile, layer.getProxyCollisionSystem().proxyList);
-            layerCollisionSystem.UpdateList(playerTile, layerCollisionSystem.colliderListA);
-            players.add(playerTile);
+            return true;
         }
         else
         {
-            notAllowed();
+            return false;
         }
-    }
-
-    public void notAllowed()
-    {
-        parent.textSize(30);
-        parent.textAlign(PConstants.CENTER, PConstants.CENTER);
-        parent.fill(255, 0, 0);
-        parent.text("Not Allowed", 400, 400);
     }
 
     private int dirToInt(Directions directions)
@@ -251,6 +256,8 @@ public class LevelManager implements Serializable {
             {
                 if (players.get(i).getCol() == players.get(j).getCol() && players.get(i).getRow() == players.get(j).getRow())
                 {
+                    players.get(i).movement.setDir(Directions.STATIC);
+                    players.get(j).movement.setDir(Directions.STATIC);
                     result = true;
                 }
             }
@@ -351,5 +358,24 @@ public class LevelManager implements Serializable {
         { this.playerRight = 0; }
         else
         { this.playerRight = playerRight; }
+    }
+
+    public void subtractPlayer(Directions dir)
+    {
+        switch (dir)
+        {
+            case UP :
+                playerUp--;
+                break;
+            case DOWN :
+                playerDown--;
+                break;
+            case LEFT :
+                playerLeft--;
+                break;
+            case RIGHT :
+                playerRight--;
+                break;
+        }
     }
 }

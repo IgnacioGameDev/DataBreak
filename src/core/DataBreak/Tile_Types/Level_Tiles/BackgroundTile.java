@@ -10,7 +10,7 @@ public class BackgroundTile extends Tile {
     public BackgroundTile(int col, int row, int size, PApplet p)
     {
         super(col, row, size, p);
-        this.fillColor = new FillColor(this, new int[] {255, 255, 255}, false);
+        this.fillColor = new FillColor(this, new int[] {205, 240, 220}, false);
     }
 
     @Override

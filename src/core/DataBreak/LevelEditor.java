@@ -7,6 +7,8 @@ import core.Tile_Engine.Tile_System.EmptyTile;
 import core.Tile_Engine.Tile_System.TileMap;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
+import processing.core.PImage;
 
 import java.util.ArrayList;
 
@@ -22,6 +24,10 @@ public class LevelEditor {
     private boolean victory;
     private Directions playerDir;
 
+    private boolean notAllowed;
+    private int savedTime;
+    private int passedTime;
+
     private ArrayList<MarkerTile> markerTiles;
 
 
@@ -35,6 +41,9 @@ public class LevelEditor {
         levelManager = new LevelManager(this.parent, this.layerCollisionSystem, layer3.getProxyCollisionSystem());
         isPlaying = true;
         markerTiles = new ArrayList<>();
+        playerDir = Directions.UP;
+        savedTime = parent.millis();
+        notAllowed = false;
     }
 
     public void Update()
@@ -55,6 +64,11 @@ public class LevelEditor {
 
     public void LevelInfo()
     {
+        parent.fill(205,240, 220);
+        parent.rect(120, 10, 40, 40);
+        parent.rect(320, 10, 40, 40);
+        parent.rect(520, 10, 40, 40);
+        parent.rect(720, 10, 40, 40);
         parent.fill(0, 0, 0);
         parent.textSize(20);
         parent.textAlign(PConstants.CENTER, PConstants.CENTER);
@@ -62,6 +76,22 @@ public class LevelEditor {
         parent.text("DOWN  " + levelManager.getPlayerDown(), 300, 30);
         parent.text("LEFT  " + levelManager.getPlayerLeft(), 500, 30);
         parent.text("RIGHT  " + levelManager.getPlayerRight(), 700, 30);
+        PImage playButton = parent.loadImage("src/core/DataBreak/Assets/Play.png");
+        PImage pauseButton = parent.loadImage("src/core/DataBreak/Assets/Pause.png");
+        playButton.resize(100, 100);
+        pauseButton.resize(110, 110);
+        parent.image(playButton, 30, 670);
+        parent.image(pauseButton, 150, 665);
+        parent.textSize(45);
+        parent.text("Main Menu", 660, 740);
+    }
+
+    public void EditOptions()
+    {
+        parent.textSize(40);
+        parent.text("Save", 730, 600);
+        parent.textSize(40);
+        parent.text("Load", 730, 670);
     }
 
     public void keyReleased(char key, int keyCode)
@@ -116,9 +146,6 @@ public class LevelEditor {
             case 'q' :
                 layer3.getTile(layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY)).Destroy();
                 break;
-            case 'x' :
-                levelManager.LoadLevel(layer3,"level1");
-                break;
         }
     }
 
@@ -126,21 +153,28 @@ public class LevelEditor {
     {
         if (parent.mouseButton == parent.LEFT)
         {
-            if (x < 200)
+            if (y < 200)
             {
-                levelManager.setPlayerUp(levelManager.getPlayerUp() + 1);
+                if (x < 200)
+                {
+                    levelManager.setPlayerUp(levelManager.getPlayerUp() + 1);
+                }
+                else if (x < 400)
+                {
+                    levelManager.setPlayerDown(levelManager.getPlayerDown() + 1);
+                }
+                else if (x < 600)
+                {
+                    levelManager.setPlayerLeft(levelManager.getPlayerLeft() + 1);
+                }
+                else if (x < 800)
+                {
+                    levelManager.setPlayerRight(levelManager.getPlayerRight() + 1);
+                }
             }
-            else if (x < 400)
+            else if (y > 580 && y < 625 && x > 600)
             {
-                levelManager.setPlayerDown(levelManager.getPlayerDown() + 1);
-            }
-            else if (x < 600)
-            {
-                levelManager.setPlayerLeft(levelManager.getPlayerLeft() + 1);
-            }
-            else if (x < 800)
-            {
-                levelManager.setPlayerRight(levelManager.getPlayerRight() + 1);
+                levelManager.SaveLevel(layer3, "level1");
             }
         }
         else if (parent.mouseButton == parent.RIGHT)
@@ -185,23 +219,62 @@ public class LevelEditor {
                 playerDir = Directions.RIGHT;
             }
         }
-        if (y > 120 && y < 700)
+        if (y > 120 && y < 650)
         {
-            if (layer3.getTile(layer3.getLinePixel(x), layer3.getLinePixel(y)).getClass().getSimpleName().equals("PathTile"))
+            if (layer3.getTile(layer3.getLinePixel(x), layer3.getLinePixel(y)).getClass().getSimpleName().equals("PathTile") && levelManager.canAddPlayer(playerDir))
             {
                 levelManager.AddPlayer(layer2, layer2.getLinePixel(x), layer2.getLinePixel(y), layer2.getTileSize(), playerDir);
                 markerTiles.add(new MarkerTile(layer2.getLinePixel(x), layer2.getLinePixel(y), layer2.getTileSize(), parent));
             }
             else
             {
-                levelManager.notAllowed();
+                savedTime = parent.millis();
+                notAllowed = true;
             }
         }
-        if (y > 700 && x < 200)
+
+        if (y > 650 && x < 140)
         {
             setPlaying(true);
             markerTiles.clear();
         }
+        else if (y > 650 && x < 270)
+        {
+            setPlaying(false);
+        }
+    }
+
+    public void setPassedTime(int passedTime) {
+        this.passedTime = passedTime;
+    }
+
+    public int getSavedTime() {
+        return savedTime;
+    }
+
+    public void notAllowed()
+    {
+        if (passedTime > 1000 && notAllowed)
+        {
+            notAllowed = false;
+            parent.fill(205, 240, 220);
+            parent.rect(320, 80, 160, 100);
+        }
+        else if (notAllowed)
+        {
+            parent.textSize(25);
+            parent.textAlign(PConstants.CENTER, PConstants.CENTER);
+            parent.fill(255, 0, 0);
+            parent.text("Not Allowed", 400, 100);
+        }
+    }
+
+    public void LoadLevelFromInt(int levelNum)
+    {
+        levelManager.SetLoadLevel(levelNum);
+        levelManager.LoadLevel(layer3,"level1");
+        Update();
+        setPlaying(false);
     }
 
     public boolean checkGameOver()

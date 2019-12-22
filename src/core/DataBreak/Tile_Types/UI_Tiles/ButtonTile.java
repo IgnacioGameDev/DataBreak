@@ -16,20 +16,12 @@ public class ButtonTile extends Tile {
     {
         super(col, row, size, p);
         info = "0";
-        this.fillColor = new FillColor(this, new int[] {255, 0, 0}, true);
-        this.textDisplay = new TextDisplay(this, info, 12, new int[] {255, 255, 255}, PConstants.CENTER, PConstants.CENTER);
+        this.fillColor = new FillColor(this, new int[] {(int)parent.random(120, 220), (int)parent.random(120, 220), (int)parent.random(120, 220)}, true);
+        this.textDisplay = new TextDisplay(this, info, 25, new int[] {255, 255, 255}, PConstants.CENTER, PConstants.CENTER);
     }
 
     @Override
     public void Render() {
         CompUpdate();
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
     }
 }

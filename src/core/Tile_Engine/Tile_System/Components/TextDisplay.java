@@ -33,6 +33,10 @@ public class TextDisplay extends Component {
         t.parent.text(info, t.getX() + t.getSize()/2, t.getY() + t.getSize()/2);
     }
 
+    public String getInfo() {
+        return info;
+    }
+
     public void setInfo(String info) { this.info = info; }
 
     public void setFont(int font) { this.font = font; }

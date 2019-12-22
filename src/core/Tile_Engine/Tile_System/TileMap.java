@@ -174,7 +174,7 @@ public class TileMap {
     public Tile[] getEveryTile()
     {
         int index = 0;
-        Tile[] allTiles = new Tile[256];
+        Tile[] allTiles = new Tile[colNum*rowNum];
         for (int i = 0; i < colNum; i++) {
             for (int j = 0; j < rowNum; j++) {
                 allTiles[index] = getTile(i, j);
