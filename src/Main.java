@@ -24,9 +24,6 @@ public class Main extends PApplet {
 
     public void keyReleased() {
         dataBreak.KeyPressed(key, keyCode);
-        if (key == 'o')
-        {
-            saveFrame();
-        }
+        if (key == 'o') { saveFrame(); }
     }
 }
