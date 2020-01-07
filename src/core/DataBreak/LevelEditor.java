@@ -7,11 +7,13 @@ import core.Tile_Engine.Tile_System.EmptyTile;
 import core.Tile_Engine.Tile_System.TileMap;
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PGraphics;
 import processing.core.PImage;
-
 import java.util.ArrayList;
 
+//Class used to handle player input during gameplay and editing
+//Class also handles gameplay UI and info display
+//Only class to handle all the game-play layers, essentially all tiles in the game are contained within this class
+//Having all the layers also means it makes use of the layercollisionsystem
 public class LevelEditor {
 
     private PApplet parent;
@@ -20,10 +22,9 @@ public class LevelEditor {
     private LevelManager levelManager;
 
     private boolean isPlaying;
-    private boolean gameOver;
-    private boolean victory;
     private Directions playerDir;
 
+    //Variables used for the java timer to display information for a determined amount of seconds
     private boolean notAllowed;
     private int savedTime;
     private int passedTime;
@@ -38,7 +39,7 @@ public class LevelEditor {
         layer2 = new TileMap(16,16, 50, new EmptyTile(1, 1, 1, this.parent), parent);
         layer3 = new TileMap(16, 16, 50, new EmptyTile(1, 1, 1, this.parent), parent);
         layerCollisionSystem = new LayerCollisionSystem(layer2, layer3, parent);
-        levelManager = new LevelManager(this.parent, this.layerCollisionSystem, layer3.getProxyCollisionSystem());
+        levelManager = new LevelManager(this.parent, this.layerCollisionSystem);
         isPlaying = true;
         markerTiles = new ArrayList<>();
         playerDir = Directions.UP;
@@ -46,6 +47,7 @@ public class LevelEditor {
         notAllowed = false;
     }
 
+    //Updates layers and collisions when the game isn't paused, displays the marker tiles
     public void Update()
     {
         if (isPlaying)
@@ -62,38 +64,89 @@ public class LevelEditor {
         }
     }
 
+    //Draws level UI and interactable buttons
     public void LevelInfo()
     {
-        parent.fill(205,240, 220);
-        parent.rect(120, 10, 40, 40);
-        parent.rect(320, 10, 40, 40);
-        parent.rect(520, 10, 40, 40);
-        parent.rect(720, 10, 40, 40);
-        parent.fill(0, 0, 0);
+        parent.fill(DataBreak.backgroundColor.getRGB());
+        parent.rect(0, 0, 800, 130);
+
+        //Available players and current selected player
+        parent.fill(DataBreak.defaultTextColor.getRGB());
+        switch (playerDir)
+        {
+            case UP :
+                parent.rect(90, 60, 20, 20);
+                break;
+            case DOWN :
+                parent.rect(290, 60, 20, 20);
+                break;
+            case LEFT :
+                parent.rect(490, 60, 20, 20);
+                break;
+            case RIGHT :
+                parent.rect(690, 60, 20, 20);
+                break;
+        }
         parent.textSize(20);
         parent.textAlign(PConstants.CENTER, PConstants.CENTER);
         parent.text("UP  " + levelManager.getPlayerUp(), 100, 30);
         parent.text("DOWN  " + levelManager.getPlayerDown(), 300, 30);
         parent.text("LEFT  " + levelManager.getPlayerLeft(), 500, 30);
         parent.text("RIGHT  " + levelManager.getPlayerRight(), 700, 30);
+
+        //Play/Pause/Menu buttons
         PImage playButton = parent.loadImage("src/core/DataBreak/Assets/Play.png");
         PImage pauseButton = parent.loadImage("src/core/DataBreak/Assets/Pause.png");
         playButton.resize(100, 100);
         pauseButton.resize(110, 110);
         parent.image(playButton, 30, 670);
-        parent.image(pauseButton, 150, 665);
+        //Pause button and feature disabled, it worked but broke the game design (the player can pause and cheat, easier to remove feature altogether)
+        //parent.image(pauseButton, 150, 665);
         parent.textSize(45);
         parent.text("Main Menu", 660, 740);
     }
 
-    public void EditOptions()
+    //Displays information on level editing
+    public void EditInfo()
     {
+        //Tile type key
+        parent.textAlign(PConstants.LEFT, PConstants.CENTER);
+        parent.textSize(28);
+        parent.text("Keys", 0, 140);
+        parent.text("Reset r", 0, 638);
+        parent.textAlign(PConstants.CENTER, PConstants.CENTER);
+        parent.text("1", 75, 188);
+        parent.text("2", 75, 238);
+        parent.text("3", 75, 288);
+        parent.text("w", 75, 338);
+        parent.text("a", 75, 388);
+        parent.text("s", 75, 438);
+        parent.text("d", 75, 488);
+        parent.text("e", 75, 538);
+        parent.text("f", 75, 588);
+        parent.image(parent.loadImage("src/core/DataBreak/Assets/Path.png"), 0, 170);
+        parent.image(parent.loadImage("src/core/DataBreak/Assets/Target.png"), 0, 220);
+        parent.image(parent.loadImage("src/core/DataBreak/Assets/Exit.png"), 0, 270);
+        parent.image(parent.loadImage("src/core/DataBreak/Assets/ArrowUp.png"), 0, 320);
+        parent.image(parent.loadImage("src/core/DataBreak/Assets/ArrowLeft.png"), 0, 370);
+        parent.image(parent.loadImage("src/core/DataBreak/Assets/ArrowDown.png"), 0, 420);
+        parent.image(parent.loadImage("src/core/DataBreak/Assets/ArrowRight.png"), 0, 470);
+        parent.image(parent.loadImage("src/core/DataBreak/Assets/Flip.png"), 0, 520);
+        parent.image(parent.loadImage("src/core/DataBreak/Assets/Slider.png"), 0, 570);
+
+        //Save/Load buttons
+        parent.fill(DataBreak.defaultTextColor.getRGB());
         parent.textSize(40);
         parent.text("Save", 730, 600);
-        parent.textSize(40);
         parent.text("Load", 730, 670);
+
+        //Additional instructions
+        parent.textSize(20);
+        parent.text("Left/Right click - Add/Remove available viruses", 400, 100);
     }
 
+    //Editing player input using the level manager to add tiles to the corresponding layers
+    //Controlled by string variable
     public void keyReleased(char key, int keyCode)
     {
         switch(key)
@@ -149,6 +202,8 @@ public class LevelEditor {
         }
     }
 
+    //Clicking on edit mode adds and removes players available for the level being edited
+    //Also used to press buttons like save/load
     public void mouseEdit(int x, int y)
     {
         if (parent.mouseButton == parent.LEFT)
@@ -198,6 +253,7 @@ public class LevelEditor {
         }
     }
 
+    //During play mode mouse is used to select player direction, place players down and play/pause the game
     public void mousePlay(int x, int y)
     {
         if (y < 120)
@@ -221,7 +277,8 @@ public class LevelEditor {
         }
         if (y > 120 && y < 650)
         {
-            if (layer3.getTile(layer3.getLinePixel(x), layer3.getLinePixel(y)).getClass().getSimpleName().equals("PathTile") && levelManager.canAddPlayer(playerDir))
+            //Only allowed to add player if game is paused, and it is on allowed tiles
+            if (layer3.getTile(layer3.getLinePixel(x), layer3.getLinePixel(y)).getClass().getSimpleName().equals("PathTile") && levelManager.canAddPlayer(playerDir) && !isPlaying)
             {
                 levelManager.AddPlayer(layer2, layer2.getLinePixel(x), layer2.getLinePixel(y), layer2.getTileSize(), playerDir);
                 markerTiles.add(new MarkerTile(layer2.getLinePixel(x), layer2.getLinePixel(y), layer2.getTileSize(), parent));
@@ -238,9 +295,25 @@ public class LevelEditor {
             setPlaying(true);
             markerTiles.clear();
         }
-        else if (y > 650 && x < 270)
+    }
+
+    //Can use the keys instead of the mouse to select player directions
+    public void keyPlay(char key, int keycode)
+    {
+        switch (key)
         {
-            setPlaying(false);
+            case '1' :
+                playerDir = Directions.UP;
+                break;
+            case '2' :
+                playerDir = Directions.DOWN;
+                break;
+            case '3' :
+                playerDir = Directions.LEFT;
+                break;
+            case '4' :
+                playerDir = Directions.RIGHT;
+                break;
         }
     }
 
@@ -252,12 +325,13 @@ public class LevelEditor {
         return savedTime;
     }
 
+    //Message displayed when attempting things that arent allowed, uses the processing millis method for a timer when the game is not in paying state
     public void notAllowed()
     {
         if (passedTime > 1000 && notAllowed)
         {
             notAllowed = false;
-            parent.fill(205, 240, 220);
+            parent.fill(DataBreak.backgroundColor.getRGB());
             parent.rect(320, 80, 160, 100);
         }
         else if (notAllowed)
@@ -269,6 +343,7 @@ public class LevelEditor {
         }
     }
 
+    //Loads numbered levels from an integer using levelmanager variables, then displays it and pauses the game
     public void LoadLevelFromInt(int levelNum)
     {
         levelManager.SetLoadLevel(levelNum);
@@ -277,6 +352,7 @@ public class LevelEditor {
         setPlaying(false);
     }
 
+    //Checks for the game state using specific level information
     public boolean checkGameOver()
     {
         return levelManager.CheckPlayersGameOver();

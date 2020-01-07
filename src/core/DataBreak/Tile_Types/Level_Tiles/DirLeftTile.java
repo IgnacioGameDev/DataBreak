@@ -1,8 +1,10 @@
 package core.DataBreak.Tile_Types.Level_Tiles;
+import core.DataBreak.DataBreak;
 import core.Tile_Engine.Tile_System.Components.Sprite;
 import core.Tile_Engine.Tile_System.Tile;
 import processing.core.PApplet;
 
+//Directional tile (See DownTile)
 public class DirLeftTile extends Tile {
 
     public Sprite sprite;
@@ -10,7 +12,7 @@ public class DirLeftTile extends Tile {
     public DirLeftTile(int col, int row, int size, PApplet p)
     {
         super(col, row, size, p);
-        this.sprite = new Sprite(this, "src/core/DataBreak/Assets/ArrowLeft.png");
+        this.sprite = new Sprite(this, "src/core/DataBreak/Assets/ArrowLeft.png", DataBreak.specialTileColor);
     }
 
     @Override

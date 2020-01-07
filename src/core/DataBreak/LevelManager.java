@@ -9,30 +9,43 @@ import core.Tile_Engine.Tile_System.EmptyTile;
 import core.Tile_Engine.Tile_System.Tile;
 import core.Tile_Engine.Tile_System.TileMap;
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import java.util.ArrayList;
 
+//This class handles saving and loading the tiles inside an entire level
+//It also handles the addition and removal of individual tiles independent of layers
+//Tile centric class, NOT dependant of tilemap
+//Very "game specific" class, uses but also deviates from engine methods
 public class LevelManager implements Serializable {
 
     private PApplet parent;
+
+    //String used to reference type of tiles being instantiated
     private String tileType;
+
+    //Arraylists that handle tiles, sorting and prioritizing some over others
     private ArrayList<Tile> loadedTiles;
     private ArrayList<Tile> loadedSpecialTiles;
+    private ArrayList<PlayerTile> players;
+    private ArrayList<Tile> dirTiles;
+
+    //Classes used to serialize information and to manipulate tiles with collider components
     private DataManager dataManager;
     private LayerCollisionSystem layerCollisionSystem;
+
+    //The only level to be saved currently is the custom user made level (level 10)
     private String infoLocation = "src/core/DataBreak/Level_Data/level10info.json";
 
+    //Information specific to a level that is serialized independent of its tiles (number and types of player, number of objectives)
     private int objectiveNum;
     private int playerUp;
     private int playerDown;
     private int playerRight;
     private int playerLeft;
-    private ArrayList<PlayerTile> players;
-    private ArrayList<Tile> dirTiles;
 
-    public LevelManager(PApplet parent, LayerCollisionSystem layerCollisionSystem, ProxyCollisionSystem proxyCollisionSystem)
+    //Initializing the class referencing level10 for custom level editing
+    public LevelManager(PApplet parent, LayerCollisionSystem layerCollisionSystem)
     {
         this.parent = parent;
         this.layerCollisionSystem = layerCollisionSystem;
@@ -42,6 +55,29 @@ public class LevelManager implements Serializable {
         dirTiles = new ArrayList<>();
     }
 
+    //Used to put information about the level into strings in an external file
+    @Override
+    public JSONObject serializeToJSON() {
+        JSONObject levelData = new JSONObject();
+        levelData.setInt("objectiveNum", objectiveNum);
+        levelData.setInt("playerUp", playerUp);
+        levelData.setInt("playerDown", playerDown);
+        levelData.setInt("playerLeft", playerLeft);
+        levelData.setInt("playerRight", playerRight);
+        return levelData;
+    }
+
+    //Returns strings in an external file into variables used by the class
+    @Override
+    public void loadJSONObject(JSONObject json) {
+        objectiveNum = json.getInt("objectiveNum");
+        playerUp = json.getInt("playerUp");
+        playerDown = json.getInt("playerDown");
+        playerLeft = json.getInt("playerLeft");
+        playerRight = json.getInt("playerRight");
+    }
+
+    //Saves a layer of tiles and the level info in the editor into an external file
     public void SaveLevel(TileMap layer, String levelName)
     {
         ArrayList<Tile> allTiles = layer.getInitialTiles();
@@ -54,6 +90,7 @@ public class LevelManager implements Serializable {
         System.out.println("save");
     }
 
+    //Used to request and queue a level to be loaded using an integer, level files must be numbered
     public void SetLoadLevel(int levelNum)
     {
         dataManager.setLoadGameFile("level"+String.valueOf(levelNum)+".json");
@@ -61,6 +98,7 @@ public class LevelManager implements Serializable {
         infoLocation = "src/core/DataBreak/Level_Data/level" + String.valueOf(levelNum) + "info.json";
     }
 
+    //Sets level variables using the saved level info and instantiates serialized tiles into a selected layer
     public void LoadLevel(TileMap layer, String levelName)
     {
         loadedTiles = new ArrayList<>();
@@ -85,26 +123,11 @@ public class LevelManager implements Serializable {
         System.out.println("load");
     }
 
-    @Override
-    public JSONObject serializeToJSON() {
-        JSONObject levelData = new JSONObject();
-        levelData.setInt("objectiveNum", objectiveNum);
-        levelData.setInt("playerUp", playerUp);
-        levelData.setInt("playerDown", playerDown);
-        levelData.setInt("playerLeft", playerLeft);
-        levelData.setInt("playerRight", playerRight);
-        return levelData;
-    }
-
-    @Override
-    public void loadJSONObject(JSONObject json) {
-        objectiveNum = json.getInt("objectiveNum");
-        playerUp = json.getInt("playerUp");
-        playerDown = json.getInt("playerDown");
-        playerLeft = json.getInt("playerLeft");
-        playerRight = json.getInt("playerRight");
-    }
-
+    //Uses a string variable to execute specific constructors for tile subclasses, organizing them into necessary lists
+    //Sensibly it can only initialize tiles with a default constructor, unless extra parameters are irrelevant
+    //Using a string is important for serialization
+    //Can also be used for level editing and individual tiles
+    //Creates tiles in a specific layer
     public Tile AddTile(TileMap layer, int col, int row, int size)
     {
         Tile tile = null;
@@ -198,6 +221,7 @@ public class LevelManager implements Serializable {
         return tile;
     }
 
+    //Example of tile with non default constructor with a relevant extra parameter (direction)
     public void AddPlayer(TileMap layer, int col, int row, int size, Directions dir)
     {
         PlayerTile playerTile = new PlayerTile(col, row, size, parent, dir);
@@ -208,18 +232,8 @@ public class LevelManager implements Serializable {
         subtractPlayer(dir);
     }
 
-    public boolean canAddPlayer(Directions dir)
-    {
-        if (dirToInt(dir) > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
+    //References level data integers using direction variable
+    //Example : How many players are left with the UP direction?
     private int dirToInt(Directions directions)
     {
         int result = 0;
@@ -241,8 +255,20 @@ public class LevelManager implements Serializable {
         return result;
     }
 
-    public void setTileType(String tileType) { this.tileType = tileType; }
+    //Boolean to check if there are available players of specific directions
+    public boolean canAddPlayer(Directions dir)
+    {
+        if (dirToInt(dir) > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
+    //Checks if players are triggering a game over game state or if they are overlapping
     public boolean CheckPlayersGameOver()
     {
         boolean result = false;
@@ -254,6 +280,7 @@ public class LevelManager implements Serializable {
             }
             for (int j = i+1; j < players.size(); j++)
             {
+                //When players collide they stop moving and game over is triggered
                 if (players.get(i).getCol() == players.get(j).getCol() && players.get(i).getRow() == players.get(j).getRow())
                 {
                     players.get(i).movement.setDir(Directions.STATIC);
@@ -265,6 +292,8 @@ public class LevelManager implements Serializable {
         return result;
     }
 
+    //Checks if players are triggering a victory game state
+    //This happens when all players have a true victory variable
     public boolean CheckPlayersVictory(int objective)
     {
         boolean result = false;
@@ -280,6 +309,8 @@ public class LevelManager implements Serializable {
         return result;
     }
 
+    //Checks if players have flipped the switch
+    //This functionality is on the player and not the flip switch because that would require putting switches in another Arraylist or searching for them in existing ones
     public void CheckPlayerSwitch(TileMap layer)
     {
         for (int i = 0; i < players.size(); i++)
@@ -292,6 +323,9 @@ public class LevelManager implements Serializable {
         }
     }
 
+    //Flips all the directional tiles in a layer (Effectively rotates them 180 degrees)
+    //This is done by temporarily creating a clone of the directional tiles arraylist
+    //so that the original tiles can be changed while still gathering information from it
     private void FlipDirection(TileMap layer)
     {
         ArrayList<Tile> temporary = (ArrayList<Tile>) dirTiles.clone();
@@ -320,6 +354,9 @@ public class LevelManager implements Serializable {
         }
     }
 
+    //Variable referencing
+    public void setTileType(String tileType) { this.tileType = tileType; }
+
     public int getObjectiveNum() { return objectiveNum; }
 
     public int getPlayerUp() { return playerUp; }
@@ -332,6 +369,7 @@ public class LevelManager implements Serializable {
 
     public void setObjectiveNum(int objectiveNum) { this.objectiveNum = objectiveNum; }
 
+    //Variables with bounds
     public void setPlayerUp(int playerUp) {
         if (playerUp < 0)
         { this.playerUp = 0; }

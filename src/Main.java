@@ -1,5 +1,4 @@
 import core.DataBreak.DataBreak;
-import core.DataBreak.LevelEditor;
 import processing.core.PApplet;
 
 public class Main extends PApplet {
@@ -16,7 +15,7 @@ public class Main extends PApplet {
     }
 
     public void draw() {
-        dataBreak.Update();
+        dataBreak.Run();
     }
 
     public void mouseReleased() {
@@ -25,5 +24,9 @@ public class Main extends PApplet {
 
     public void keyReleased() {
         dataBreak.KeyPressed(key, keyCode);
+        if (key == 'o')
+        {
+            saveFrame();
+        }
     }
 }

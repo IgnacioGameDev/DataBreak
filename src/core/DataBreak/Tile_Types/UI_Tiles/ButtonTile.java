@@ -4,7 +4,10 @@ import core.Tile_Engine.Tile_System.Components.TextDisplay;
 import core.Tile_Engine.Tile_System.Tile;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import java.awt.*;
 
+//Uses the text display component
+//No funcionality/incomplete as it only displays information. There is no "clickable" component
 public class ButtonTile extends Tile {
 
     public FillColor fillColor;
@@ -16,8 +19,8 @@ public class ButtonTile extends Tile {
     {
         super(col, row, size, p);
         info = "0";
-        this.fillColor = new FillColor(this, new int[] {(int)parent.random(120, 220), (int)parent.random(120, 220), (int)parent.random(120, 220)}, true);
-        this.textDisplay = new TextDisplay(this, info, 25, new int[] {255, 255, 255}, PConstants.CENTER, PConstants.CENTER);
+        this.fillColor = new FillColor(this, new Color(33, 85, 191), true);
+        this.textDisplay = new TextDisplay(this, info, 25, Color.WHITE, PConstants.CENTER, PConstants.CENTER);
     }
 
     @Override

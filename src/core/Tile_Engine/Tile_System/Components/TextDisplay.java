@@ -2,6 +2,8 @@ package core.Tile_Engine.Tile_System.Components;
 import core.Tile_Engine.Tile_System.Component;
 import core.Tile_Engine.Tile_System.Tile;
 
+import java.awt.*;
+
 //Component that displays strings as a text element on tiles
 public class TextDisplay extends Component {
 
@@ -13,9 +15,9 @@ public class TextDisplay extends Component {
     private int textAlignY;
 
     //COLORED TEXT! YAY
-    private int[] textColor;
+    private Color textColor;
 
-    public TextDisplay(Tile t, String info, int font, int[] textColor, int textAlignX, int textAlignY)
+    public TextDisplay(Tile t, String info, int font, Color textColor, int textAlignX, int textAlignY)
     {
         super(t);
         this.info = info;
@@ -29,7 +31,7 @@ public class TextDisplay extends Component {
     protected void Update() {
         t.parent.textAlign(textAlignX, textAlignY);
         t.parent.textSize(font);
-        t.parent.fill(textColor[0], textColor[1], textColor[2]);
+        t.parent.fill(textColor.getRed(), textColor.getGreen(), textColor.getBlue());
         t.parent.text(info, t.getX() + t.getSize()/2, t.getY() + t.getSize()/2);
     }
 
@@ -41,7 +43,7 @@ public class TextDisplay extends Component {
 
     public void setFont(int font) { this.font = font; }
 
-    public void setTextColor(int[] textColor) { this.textColor = textColor; }
+    public void setTextColor(Color textColor) { this.textColor = textColor; }
 
     public void setTextAlignX(int textAlignX) { this.textAlignX = textAlignX; }
 

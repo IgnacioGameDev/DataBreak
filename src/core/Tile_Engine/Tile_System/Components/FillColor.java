@@ -2,15 +2,18 @@ package core.Tile_Engine.Tile_System.Components;
 import core.Tile_Engine.Tile_System.Component;
 import core.Tile_Engine.Tile_System.Tile;
 
+import java.awt.*;
+
 //Component that draws a square over the tile
 public class FillColor extends Component {
 
     //Controlable by the user are the square's color and if it has a stroke
     //Size is always adjusted to the tile this is on
-    private int[] hue;
+    //Uses Java Color class
+    private Color hue;
     private boolean stroke;
 
-    public FillColor(Tile t, int[] hue, boolean stroke)
+    public FillColor(Tile t, Color hue, boolean stroke)
     {
         super(t);
         this.hue = hue;
@@ -19,7 +22,7 @@ public class FillColor extends Component {
 
     @Override
     protected void Update() {
-        t.parent.fill(hue[0], hue[1], hue[2]);
+        t.parent.fill(hue.getRed(), hue.getGreen(), hue.getBlue());
         if (stroke)
         {
             t.parent.stroke(0);
@@ -31,7 +34,7 @@ public class FillColor extends Component {
         t.parent.rect(t.getX(), t.getY(), t.getSize(), t.getSize());
     }
 
-    public void setHue(int[] hue) {
+    public void setHue(Color hue) {
         this.hue = hue;
     }
 
