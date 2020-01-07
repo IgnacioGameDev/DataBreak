@@ -134,7 +134,11 @@ public class LevelManager implements Serializable {
         switch (tileType)
         {
             case "EmptyTile" :
+                Tile nT = layer.getTile(col, row);
                 EmptyTile emptyTile = new EmptyTile(col, row, size, this.parent);
+                layer.getInitialTiles().set(nT.getCell(), emptyTile);
+                layer.getInitialTiles().get(nT.getCell()).setCell(((nT.getRow()) * layer.getColNum()) + (nT.getCol()+1));
+                layerCollisionSystem.UpdateList(emptyTile, layerCollisionSystem.colliderListB);
                 tile = emptyTile;
                 break;
             case "BackgroundTile" :
@@ -142,10 +146,10 @@ public class LevelManager implements Serializable {
                 tile = backgroundTile;
                 break;
             case "PathTile" :
-                Tile b =  layer.getTile(col, row);
+                Tile pT =  layer.getTile(col, row);
                 PathTile pathTile = new PathTile(col, row, size, this.parent);
-                layer.getInitialTiles().set(b.getCell(), pathTile);
-                layer.getInitialTiles().get(b.getCell()).setCell(((b.getRow()) * layer.getColNum()) + (b.getCol()+1));
+                layer.getInitialTiles().set(pT.getCell(), pathTile);
+                layer.getInitialTiles().get(pT.getCell()).setCell(((pT.getRow()) * layer.getColNum()) + (pT.getCol()+1));
                 layerCollisionSystem.UpdateList(pathTile, layerCollisionSystem.colliderListB);
                 tile = pathTile;
                 break;

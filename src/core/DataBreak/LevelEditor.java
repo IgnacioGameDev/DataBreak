@@ -102,6 +102,9 @@ public class LevelEditor {
         parent.image(playButton, 30, 670);
         //Pause button and feature disabled, it worked but broke the game design (the player can pause and cheat, easier to remove feature altogether)
         //parent.image(pauseButton, 150, 665);
+        //Replace with reset button to start the level over
+        parent.textSize(38);
+        parent.text("Reset", 220, 720);
         parent.textSize(45);
         parent.text("Main Menu", 660, 740);
     }
@@ -113,7 +116,7 @@ public class LevelEditor {
         parent.textAlign(PConstants.LEFT, PConstants.CENTER);
         parent.textSize(28);
         parent.text("Keys", 0, 140);
-        parent.text("Reset r", 0, 638);
+        parent.text("Delete r", 0, 638);
         parent.textAlign(PConstants.CENTER, PConstants.CENTER);
         parent.text("1", 75, 188);
         parent.text("2", 75, 238);
@@ -188,16 +191,22 @@ public class LevelEditor {
                 levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
             case 'r' :
+                //Reset editor by deleting every tile
+                //Can't reset/delete slider tiles
                 for (int i = 0; i < layer3.getEveryTile().length; i++)
                 {
-                    layer3.getEveryTile()[i].Destroy();
+                    levelManager.setTileType("EmptyTile");
+                    levelManager.AddTile(layer3, layer3.getEveryTile()[i].getCol(), layer3.getEveryTile()[i].getRow(), layer3.getTileSize());
                 }
                 break;
             case 'z' :
+                //Save level shortcut
                 levelManager.SaveLevel(layer3, "level1");
                 break;
             case 'q' :
-                layer3.getTile(layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY)).Destroy();
+                //Deleting single tiles
+                levelManager.setTileType("EmptyTile");
+                levelManager.AddTile(layer3, layer3.getLinePixel(parent.mouseX), layer3.getLinePixel(parent.mouseY), layer3.getTileSize());
                 break;
         }
     }

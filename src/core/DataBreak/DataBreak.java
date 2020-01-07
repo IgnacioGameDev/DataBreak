@@ -50,7 +50,7 @@ public class DataBreak {
                 parent.loadImage("src/core/DataBreak/Assets/HowToPlay4.png")};
     }
 
-    //Happends once per frame dependant on gamemode
+    //Happens once per frame dependant on gamemode
     public void Run()
     {
         switch (gamemode)
@@ -73,7 +73,7 @@ public class DataBreak {
                 gameManager.Run();
                 levelEditor.setPassedTime(parent.millis() - levelEditor.getSavedTime());
                 levelEditor.notAllowed();
-                //Certain things are handles by the gameManager timer, also controls play/pause
+                //Certain things are handled by the gameManager timer, also controls play/pause
                 if (gameManager.tick())
                 {
                     levelEditor.Update();
@@ -91,6 +91,8 @@ public class DataBreak {
                     gameManager.setTick(false);
                 }
                 break;
+            //Game over and victory game states have a timer of 2 seconds before triggering, so the visual triggers for those game states are more clearly shown
+            //Eg. When two player tiles collide they trigger a game over but the wait gives the player visual feedback this is happening before changing game state
             case GAMEOVER :
                 gameManager.Run();
                 if (gameManager.tick())
@@ -182,15 +184,26 @@ public class DataBreak {
     //Certain methods can not be contained in the levelEditor, mainly things doing with gamemode and game state
     private void mousePlay2(int x, int y)
     {
+        //Main Menu
         if (x > 550 && y > 710)
         {
             levelEditor = new LevelEditor(parent);
             gamemode = Gamemode.MAINMENU;
         }
+        //Reset
+        if (x > 200 && y > 670 && x < 300)
+        {
+            levelEditor = new LevelEditor(parent);
+            levelEditor.LoadLevelFromInt(currentLevel);
+            gamemode = Gamemode.GAMEOVER;
+            gamemode = Gamemode.PLAY;
+            levelEditor.setPlaying(false);
+        }
     }
 
     private void mouseEdit2(int x, int y)
     {
+        //Load custom level (set to level 10)
         if (y > 645 && y < 700 && x > 600)
         {
             levelEditor.LoadLevelFromInt(10);
@@ -312,6 +325,7 @@ public class DataBreak {
         parent.text("YOU WON!!", parent.random(100, 700), parent.random(50, 450));
         parent.text("YOU WON!!", parent.random(100, 700), parent.random(50, 450));
         parent.text("YOU WON!!", parent.random(100, 700), parent.random(50, 450));
+        //Doesn't display next level button if there is no next level
         if (currentLevel < 9)
         {
             parent.fill(48, 242, 205);
