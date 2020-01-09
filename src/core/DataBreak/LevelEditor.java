@@ -35,6 +35,10 @@ public class LevelEditor {
     public LevelEditor(PApplet parent)
     {
         this.parent = parent;
+        //Layer 1 being the first one created acts as a background and is only visual, but is made of tiles so versatile in that it could be cahnged
+        //Layer 2 starts completely empty and is used to contain all the plaeyer tiles that are placed during gameplay
+        //Layer 3 is the top layer also starts empty and then contains all the level tiles which are mostly png files with transparent bits
+        //through which player tiels can be seen on the layer below
         layer1 = new TileMap(16,16, 50, new BackgroundTile(1, 1, 1, this.parent), parent);
         layer2 = new TileMap(16,16, 50, new EmptyTile(1, 1, 1, this.parent), parent);
         layer3 = new TileMap(16, 16, 50, new EmptyTile(1, 1, 1, this.parent), parent);

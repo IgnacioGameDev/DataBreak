@@ -134,6 +134,8 @@ public class LevelManager implements Serializable {
         switch (tileType)
         {
             case "EmptyTile" :
+                //Two references to a tile object are used as a fail safe for moving tiles in the grid that don't have the correct reference
+                //Code prioritizes the top tile if two overlap, through the "getTile" function
                 Tile nT = layer.getTile(col, row);
                 EmptyTile emptyTile = new EmptyTile(col, row, size, this.parent);
                 layer.getInitialTiles().set(nT.getCell(), emptyTile);
