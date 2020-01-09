@@ -42,6 +42,7 @@ public class LevelEditor {
         layer1 = new TileMap(16,16, 50, new BackgroundTile(1, 1, 1, this.parent), parent);
         layer2 = new TileMap(16,16, 50, new EmptyTile(1, 1, 1, this.parent), parent);
         layer3 = new TileMap(16, 16, 50, new EmptyTile(1, 1, 1, this.parent), parent);
+        //Collisions happend between the player tiles and the level tiles which are in lauyers 2 and 3
         layerCollisionSystem = new LayerCollisionSystem(layer2, layer3, parent);
         levelManager = new LevelManager(this.parent, this.layerCollisionSystem);
         isPlaying = true;
@@ -62,10 +63,8 @@ public class LevelEditor {
             layer2.Update();
             layer3.Update();
         }
-        for (MarkerTile markerTile : markerTiles)
-        {
-            markerTile.Render();
-        }
+
+        for (MarkerTile markerTile : markerTiles) { markerTile.Render(); }
     }
 
     //Draws level UI and interactable buttons
