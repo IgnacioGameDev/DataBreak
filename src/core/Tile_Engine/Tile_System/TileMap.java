@@ -5,8 +5,7 @@ import processing.core.PApplet;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-//Here is where it gets fun
-//Very complex class which makes a grid using a "base" tile then allows reference to grid positions and modification of tiles within it
+//Makes a grid using a "base" tile then allows reference to grid positions and modification of tiles within it
 //Games with only one could refer to it as a "grid" but in games with multiple TileMaps we can think of them as "layers"
 public class TileMap {
     public PApplet parent;
